@@ -16,22 +16,29 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
 
   bool showPassword = false;
+
+  bool _isLoading = false;
 
   DateTime? selectedDate;
 
   Future<void> _selectDate() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime(2026, 3, 30),
+      initialDate: DateTime(2000),
       firstDate: DateTime(1950),
-      lastDate: DateTime(2020),
+      lastDate: DateTime.now(),
     );
 
-    setState(() {
-      selectedDate = pickedDate;
-    });
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+        _dateController.text =
+            '${pickedDate.month}/${pickedDate.day}/${pickedDate.year}';
+      });
+    }
   }
 
   void togglePasswordVisibility() {
@@ -77,19 +84,21 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 16),
 
               // Birthday Field
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    selectedDate != null
-                      ? '${selectedDate!.month}/${selectedDate!.day}/${selectedDate!.year}'
-                      : 'Please Select Your Birthday',
-                    ),
-                  OutlinedButton(
-                    onPressed: _selectDate,
-                    child: const Text('Select Birthday'),
-                  )
-                ]
+              TextFormField(
+                controller: _dateController,
+                readOnly: true, // 🔑 prevents keyboard
+                decoration: const InputDecoration(
+                  labelText: 'Birthday',
+                  prefixIcon: Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(),
+                ),
+                onTap: _selectDate, // 🔑 opens picker
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select your birthday';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               
@@ -158,28 +167,45 @@ class _SignupPageState extends State<SignupPage> {
               
               // 🚀 Sign Up Button
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Welcome! Account created successfully.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SuccessScreen()),
-                    );
-                  }
-                },
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+
+                          await Future.delayed(const Duration(seconds: 2));
+
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SuccessPage(),
+                            ),
+                          );
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 18),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'Sign Up',
+                        style: TextStyle(fontSize: 18),
+                      ),
               ),
             ],
           ),
