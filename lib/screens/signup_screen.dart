@@ -15,6 +15,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
 
   bool showPassword = false;
 
@@ -23,14 +24,18 @@ class _SignupPageState extends State<SignupPage> {
   Future<void> _selectDate() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime(2026, 3, 30),
+      initialDate: DateTime(2000),
       firstDate: DateTime(1950),
-      lastDate: DateTime(2020),
+      lastDate: DateTime.now(),
     );
 
-    setState(() {
-      selectedDate = pickedDate;
-    });
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+        _dateController.text =
+            '${pickedDate.month}/${pickedDate.day}/${pickedDate.year}';
+      });
+    }
   }
 
   void togglePasswordVisibility() {
@@ -76,19 +81,21 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 16),
 
               // Birthday Field
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    selectedDate != null
-                      ? '${selectedDate!.month}/${selectedDate!.day}/${selectedDate!.year}'
-                      : 'Please Select Your Birthday',
-                    ),
-                  OutlinedButton(
-                    onPressed: _selectDate,
-                    child: const Text('Select Birthday'),
-                  )
-                ]
+              TextFormField(
+                controller: _dateController,
+                readOnly: true, // 🔑 prevents keyboard
+                decoration: const InputDecoration(
+                  labelText: 'Birthday',
+                  prefixIcon: Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(),
+                ),
+                onTap: _selectDate, // 🔑 opens picker
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select your birthday';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               
