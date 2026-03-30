@@ -180,7 +180,7 @@ class _SignupPageState extends State<SignupPage> {
                             _isLoading = false;
                           });
 
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => const SuccessPage(),
