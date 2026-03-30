@@ -1,23 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-// 🧓 Great-Grandparent
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fun Signup App',
-      theme: ThemeData(primarySwatch: Colors.purple),
-      home: const SignupPage(),
-    );
-  }
-}
-
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -144,29 +126,31 @@ class _SignupPageState extends State<SignupPage> {
               // 🔒 Password Field
               Row(
                 children: [
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: !showPassword,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
-                      border: OutlineInputBorder(),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: !showPassword,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
                   ),
                   IconButton(
                     icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
                     onPressed: togglePasswordVisibility,
                   )
-                ]
+                ],
               ),
               
               const SizedBox(height: 24),
