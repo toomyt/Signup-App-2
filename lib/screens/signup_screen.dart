@@ -19,6 +19,8 @@ class _SignupPageState extends State<SignupPage> {
 
   bool showPassword = false;
 
+  bool _isLoading = false;
+
   DateTime? selectedDate;
 
   Future<void> _selectDate() async {
@@ -164,24 +166,45 @@ class _SignupPageState extends State<SignupPage> {
               
               // 🚀 Sign Up Button
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Welcome! Account created successfully.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  }
-                },
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+
+                          await Future.delayed(const Duration(seconds: 2));
+
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SuccessPage(),
+                            ),
+                          );
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 18),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'Sign Up',
+                        style: TextStyle(fontSize: 18),
+                      ),
               ),
             ],
           ),
