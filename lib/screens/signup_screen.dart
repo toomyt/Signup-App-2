@@ -184,7 +184,7 @@ class _SignupPageState extends State<SignupPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SuccessPage(),
+                              builder: (context) => const SuccessScreen(),
                             ),
                           );
                         }
