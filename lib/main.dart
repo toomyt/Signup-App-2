@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:signup_app_2/screens/welcome_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SignupAdventureApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SignupAdventureApp extends StatelessWidget {
+  const SignupAdventureApp({super.key});
 
   @override
   Widget build(BuildContext context) {
