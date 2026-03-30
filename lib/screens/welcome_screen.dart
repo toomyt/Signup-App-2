@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'signup_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
 
@@ -27,9 +28,9 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                  MaterialPageRoute(builder: (context) => const SignupPage()),
                 );
               },
               child: const Text('Get Started'),
