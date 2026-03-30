@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:signup_app_2/screens/success_screen.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -164,6 +165,10 @@ class _SignupPageState extends State<SignupPage> {
                         content: Text('Welcome! Account created successfully.'),
                         backgroundColor: Colors.green,
                       ),
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SuccessScreen()),
                     );
                   }
                 },
